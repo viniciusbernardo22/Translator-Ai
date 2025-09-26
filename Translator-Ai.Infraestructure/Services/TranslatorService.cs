@@ -1,15 +1,20 @@
 ﻿
 using Microsoft.Extensions.Options;
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
 using Translator_Ai.Infraestructure.Configurations.Translator;
 
 namespace Translator_Ai.Infraestructure.Services
 {
-    public class TranslatorService(HttpClient httpClient, IOptions<TranslatorOptions> options) : ITranslatorService
+    public class TranslatorService : ITranslatorService
     {
-        private readonly HttpClient _httpClient = httpClient;
-        private readonly IOptions<TranslatorOptions> _options = options;
+        private readonly HttpClient _httpClient;
+        private readonly IOptions<TranslatorOptions> _options;
+        public TranslatorService(HttpClient httpClient, IOptions<TranslatorOptions> options)
+        {
+            _httpClient = httpClient;
+            _options = options;
+        }
 
         public async Task<string> TranslatePhraseAsync(string key, string desiredLanguage)
         {

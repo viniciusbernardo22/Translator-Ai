@@ -9,7 +9,8 @@ builder.Services.AddAzureTranslator(builder.Configuration);
 
 builder.Configuration
        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-       .AddEnvironmentVariables();
+       .AddEnvironmentVariables()
+       .AddUserSecrets<Program>();
 
 var app = builder.Build();
 
