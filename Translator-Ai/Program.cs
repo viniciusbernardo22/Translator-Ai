@@ -16,13 +16,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev", policy =>
     {
-        policy.WithOrigins("https://localhost:4200")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-
-        policy.WithOrigins("https://frontend-translator-ai.vercel.app")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        policy.WithOrigins(
+                "https://localhost:4200",
+                "https://frontend-translator-ai.vercel.app",
+                "https://translator-ai-white-resonance-7456.fly.dev"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
