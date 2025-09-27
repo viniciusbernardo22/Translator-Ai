@@ -17,8 +17,6 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
   
-      - name: List files
-        run: ls -R
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only
         working-directory: ./

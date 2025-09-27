@@ -20,18 +20,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.Use(async (context, next) =>
-{
-    // Fly envia o header X-Forwarded-Proto
-    if (context.Request.Headers["X-Forwarded-Proto"] != "https")
-    {
-        var httpsUrl = $"https://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
-        context.Response.Redirect(httpsUrl, permanent: true);
-        return;
-    }
-    await next();
-});
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
