@@ -1,4 +1,5 @@
 using Translator_Ai.Infraestructure.Configurations.Translator;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,11 +7,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAzureTranslator(builder.Configuration);
-
-builder.Configuration
-       .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-       .AddEnvironmentVariables()
-       .AddUserSecrets<Program>();
 
 builder.Services.AddCors(options =>
 {
@@ -28,7 +24,10 @@ builder.Services.AddCors(options =>
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8080);
+    options.ListenAnyIP(8080, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+    });
 });
 
 var app = builder.Build();
@@ -39,9 +38,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
-
 app.UseCors("AllowAngularDev");
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
