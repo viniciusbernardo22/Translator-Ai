@@ -1,5 +1,4 @@
 using Translator_Ai.Infraestructure.Configurations.Translator;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,17 +21,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(8080, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-    });
-});
-
 var app = builder.Build();
+var isProd = app.Environment.IsDevelopment();
 
-if (app.Environment.IsDevelopment())
+if (!isProd)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
