@@ -12,6 +12,21 @@ builder.Configuration
        .AddEnvironmentVariables()
        .AddUserSecrets<Program>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy.WithOrigins("https://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+
+        policy.WithOrigins("https://frontend-translator-ai.vercel.app")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -24,6 +39,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors("AllowAngularDev");
 app.MapControllers();
 
 app.Run();
