@@ -3,7 +3,7 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "translator-ai-white-resonance-7456"
+app = "translator-ai-bold-fire-3545"
 primary_region = 'gru'
 
 [build]
