@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "https://localhost:4200",
-                "https://frontend-translator-ai.vercel.app"
+                "https://frontend-translator-ai-git-main-viniciusbernardo22s-projects.vercel.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
