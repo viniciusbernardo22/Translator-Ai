@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Translator_Ai.Infraestructure.Models;
 using Translator_Ai.Infraestructure.Services;
 
 namespace Translator_Ai.Controllers
@@ -22,6 +23,14 @@ namespace Translator_Ai.Controllers
         {
             var response = await _translatorService.GetLanguagesAsync();
 
+            return Ok(response);
+        }
+
+
+        [HttpPost("translate-json")]
+        public async Task<IActionResult> TranslateJson([FromBody] GetTranslatedJson request)
+        {
+            var response = await _translatorService.TranslateJsonAsync(request.JsonObject, request.Language);
             return Ok(response);
         }
     }

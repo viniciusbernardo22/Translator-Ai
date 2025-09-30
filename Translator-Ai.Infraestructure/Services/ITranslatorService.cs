@@ -4,8 +4,9 @@ namespace Translator_Ai.Infraestructure.Services
 {
     public interface ITranslatorService
     {
-        public Task<string> TranslatePhraseAsync(string key, string desiredLanguage);
-        public Task<List<GetLanguagesResponse>> GetLanguagesAsync();
+        Task<string> TranslatePhraseAsync(string key, string desiredLanguage);
+        Task<List<GetLanguagesResponse>> GetLanguagesAsync();
+        Task<string> TranslateJsonAsync(object jsonObject, string desiredLanguage);
 
     }
 }

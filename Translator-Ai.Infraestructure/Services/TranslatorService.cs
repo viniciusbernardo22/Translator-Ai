@@ -30,19 +30,9 @@ namespace Translator_Ai.Infraestructure.Services
             using var doc = JsonDocument.Parse(jsonResponse);
             var translationNode = doc.RootElement.GetProperty("translation");
 
-            var result = new List<GetLanguagesResponse>();
-
-            foreach (var language in translationNode.EnumerateObject())
-            {
-                var code = language.Name;
-                var name = language.Value.GetProperty("name").GetString();
-
-                if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(name))
-                    result.Add(new GetLanguagesResponse(code, name));
-
-            }
-
-            return [.. result.OrderBy(l => l.Language)];
+            return [.. translationNode.EnumerateObject()
+                .Select(lang => new GetLanguagesResponse(lang.Name, lang.Value!.GetProperty("name").GetString()))
+                .OrderBy(l => l.Language)];
         }
 
         public async Task<string> TranslatePhraseAsync(string key, string desiredLanguage)
@@ -71,6 +61,46 @@ namespace Translator_Ai.Infraestructure.Services
             var translation = doc.RootElement[0].GetProperty("translations")[0].GetProperty("text").GetString();
 
             return translation ?? key;
+        }
+
+        public async Task<string> TranslateJsonAsync(object jsonObject, string desiredLanguage)
+        {
+            var json = JsonSerializer.Serialize(jsonObject);
+            using var doc = JsonDocument.Parse(json);
+
+            var translatedElement = await TranslateJsonElementAsync(doc.RootElement, desiredLanguage);
+
+            return JsonSerializer.Serialize(translatedElement, new JsonSerializerOptions { WriteIndented = true });
+        }
+
+        private async Task<object> TranslateJsonElementAsync(JsonElement element, string desiredLanguage)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    var obj = new Dictionary<string, object?>();
+                    foreach (var prop in element.EnumerateObject())
+                    {
+                        obj[prop.Name] = await TranslateJsonElementAsync(prop.Value, desiredLanguage);
+                    }
+                    return obj;
+
+                case JsonValueKind.Array:
+                    var list = new List<object?>();
+                    foreach (var item in element.EnumerateArray())
+                    {
+                        list.Add(await TranslateJsonElementAsync(item, desiredLanguage));
+                    }
+                    return list;
+
+                case JsonValueKind.String:
+                    var original = element.GetString() ?? "";
+                    return await TranslatePhraseAsync(original, desiredLanguage);
+
+                default:
+                    // Para números, booleanos e null, apenas retorna o valor original
+                    return element.Clone();
+            }
         }
     }
 }
